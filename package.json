@@ -1,0 +1,26 @@
+{
+  "name": "node-danjoux-peter",
+  "version": "1.0.0",
+  "description": "Projet-Node-Danjoux-Peter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdanjoux/Projet-Node-Danjoux-Peter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdanjoux/Projet-Node-Danjoux-Peter/issues"
+  },
+  "homepage": "https://github.com/bdanjoux/Projet-Node-Danjoux-Peter#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "ent": "^2.2.0",
+    "express": "^4.16.4",
+    "rivescript": "^2.0.0",
+    "socket.io": "^2.2.0"
+  }
+}
