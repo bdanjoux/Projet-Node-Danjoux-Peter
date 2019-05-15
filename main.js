@@ -1,5 +1,6 @@
 
-RiveScript = require("./node_modules/rivescript/lib/rivescript.js");
+//RiveScript = require("./node_modules/rivescript/lib/rivescript.js");
+RiveScript = require('rivescript');
 var bot = new RiveScript();
  
 // Load a directory full of RiveScript documents (.rive files). This is for
