@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/bdanjoux/Projet-Node-Danjoux-Peter#readme",
   "dependencies": {
+    "babel-core": "^6.26.3",
     "ejs": "^2.6.1",
     "ent": "^2.2.0",
     "express": "^4.16.4",
     "rivescript": "^2.0.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "webpack": "^4.31.0"
   }
 }
