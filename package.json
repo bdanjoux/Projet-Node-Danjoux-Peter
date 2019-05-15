@@ -23,6 +23,7 @@
     "express": "^4.16.4",
     "rivescript": "^2.0.0",
     "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "webpack": "^4.31.0"
   }
 }
