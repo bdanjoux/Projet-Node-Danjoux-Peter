@@ -15,15 +15,15 @@ var bot = new RiveScript();
 bot.loadDirectory("brain").then(loading_done).catch(loading_error);
  
 // Load an individual file.
-bot.loadFile("brain/eliza.rive").then(loading_done).catch(loading_error);
+//bot.loadFile("brain/eliza.rive").then(loading_done).catch(loading_error);
  
 // Load a list of files all at once (the best alternative to loadDirectory
 // for the web!)
-bot.loadFile([
+/*bot.loadFile([
   "brain/begin.rive",
   "brain/admin.rive",
   "brain/clients.rive"
-]).then(loading_done).catch(loading_error);
+]).then(loading_done).catch(loading_error);*/
  
 // Chargement de la page index.html
 app.get('/', function (req, res) {
