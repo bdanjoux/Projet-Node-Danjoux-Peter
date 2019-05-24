@@ -1,49 +1,29 @@
 
-
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-var client = require("socket.io-client");
 
 //RiveScript = require("./node_modules/rivescript/lib/rivescript.js");
 RiveScript = require('rivescript');
-var bot = new RiveScript();
- 
-// Load a directory full of RiveScript documents (.rive files). This is for
-// Node.JS only: it doesn't work on the web!
-bot.loadDirectory("brain").then(loading_done).catch(loading_error);
- 
-// Load an individual file.
-//bot.loadFile("brain/eliza.rive").then(loading_done).catch(loading_error);
- 
-// Load a list of files all at once (the best alternative to loadDirectory
-// for the web!)
-/*bot.loadFile([
-  "brain/begin.rive",
-  "brain/admin.rive",
-  "brain/clients.rive"
-]).then(loading_done).catch(loading_error);*/
+//var bot = new RiveScript();
+
+var DanjouxPeterBot = require("./bot.js");
+var myBot = new DanjouxPeterBot("bot_benjamin");
+var myBot2 = new DanjouxPeterBot("bot_marie");
+
+myBot.loadDirectory("brain");
+myBot2.loadDirectory("brain");
  
 // Chargement de la page index.html
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-function loading_done() {
-  console.log("Bot has finished loading!");
- 
-  // Now the replies must be sorted!
-  bot.sortReplies();
-    
-  // And now we're free to get a reply from the brain
-    
-}
-
 server.listen(8080);
 
-var botsocket = client.connect("http://localhost:8080/");
-botsocket.emit('nouveau_client', 'bot');
+myBot.connect("http://localhost:8080/");
+myBot2.connect("http://localhost:8080/");
 
 io.sockets.on('connection', function (socket, pseudo) {
     
@@ -59,17 +39,13 @@ io.sockets.on('connection', function (socket, pseudo) {
         message = ent.encode(message);
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
         console.log("pseudo: " + socket.pseudo);
-        if(socket.pseudo!=='bot'){
-            // NOTE: the API has changed in v2.0.0 and returns a Promise now.
-            bot.reply(socket.pseudo, message).then(function(reply) {
-                console.log("The bot says: " + reply);
-                botsocket.emit('message', reply);
-            });
+        if(!socket.pseudo.includes('benjamin')){
+            myBot.reply(socket.pseudo, message);
+        }else if(!socket.pseudo.includes('marie')){
+            myBot2.reply(socket.pseudo, message);
         }
     });
 });
-
-
 
 // It's good to catch errors too!
 function loading_error(error, filename, lineno) {
