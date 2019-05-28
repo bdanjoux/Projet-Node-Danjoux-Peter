@@ -30,13 +30,13 @@
         <script>
 
             // Connexion à socket.io
-            var socket = io.connect('http://localhost:8080');
-            var botsocket = io.connect('http://localhost:8080');
+            var socket = io.connect('http://localhost:'+port);
+            //var botsocket = io.connect('http://localhost:8080');
 
             // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
             var pseudo = prompt('Quel est votre pseudo ?');
             socket.emit('nouveau_client', pseudo);
-            botsocket.emit('nouveau_client', 'bot');
+            //botsocket.emit('nouveau_client', 'bot');
             document.title = pseudo + ' - ' + document.title;
 
             // Quand on reçoit un message, on l'insère dans la page

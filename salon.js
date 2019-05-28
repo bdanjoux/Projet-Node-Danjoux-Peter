@@ -1,87 +1,82 @@
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var DanjouxPeterBot = require("./bot.js");
+
 
 module.exports = class DanjouxPeterSalon{
 
     constructor(name,port){
+        console.log("listening on port "+port);
         this.name = name;
-
+        this.port = port;
         this.bots = new Set();
         
-        server.listen(8080);
+        server.listen(port);
+
+
 
         // Chargement de la page index.html
         app.get('/', function (req, res) {
-          res.sendfile(__dirname + '/index.html');
+          res.sendfile(__dirname + '/index.html',{port:this.port});
         });
 
         io.sockets.on('connection', function (socket, pseudo) {
         
-        // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
-        socket.on('nouveau_client', function(pseudo) {
-            pseudo = ent.encode(pseudo);
-            socket.pseudo = pseudo;
-            socket.broadcast.emit('nouveau_client', pseudo);
-        });
+            // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
+            socket.on('nouveau_client', function(pseudo) {
+                pseudo = ent.encode(pseudo);
+                socket.pseudo = pseudo;
+                socket.broadcast.emit('nouveau_client', pseudo);
+            });
 
-        // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
-        socket.on('message', function (message) {
-            message = ent.encode(message);
-            socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
-            console.log("pseudo: " + socket.pseudo);
-            if(!socket.pseudo.includes('benjamin')){
-                myBot.reply(socket.pseudo, message);
-            }else if(!socket.pseudo.includes('marie')){
-                myBot2.reply(socket.pseudo, message);
-            }
+            // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
+            socket.on('message', function (message) {
+                message = ent.encode(message);
+                socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+                console.log("pseudo: " + socket.pseudo);
+                // On envoie le message à tous les bots qui ne sont pas celui qui a envoyé le message
+                for(var bot in bots){
+                    if(bot.getName()!==sovket.pseudo){
+                        bot.reply(socket.pseudo, message);
+                    }
+                }
+            });
         });
-
     }
 
 
-
-    addSalon(){
-        this.bot.loadFile(filepath).then(()=>this.loading_done()).catch(()=>this.loading_error_file());
+    // to move to the salonManager
+    getPort(){
+        return this.port;
     }
-
     
-    loadDirectory(directorypath){
-        this.bot.loadDirectory(directorypath).then(()=>this.loading_done()).catch(()=>this.loading_error_dir());
-    }
-
-    loading_done(){
-        console.log("Bot "+this.name+" has finished loading!");
-        this.bot.sortReplies();
-    }
-
-    loading_error_file(error, filename, lineno){
-        console.log("Bot "+this.name+" Had an error when loading files: " + error);   
-    }
-
-    loading_error_dir(error, filename, lineno){
-        console.log("Bot "+this.name+" Had an error when loading dir: " + error);   
-    }
-
-    connect(address){
-        /*if(this.botsocket!==null){
-            this.botsocket.disconnect();
-        }*/
-        this.botsocket = client.connect(address);
-        this.botsocket.emit('nouveau_client', "bot "+this.name);
-    }
-
-    reply(pseudo,message){
-        if(this.botsocket!==null){
-            this.bot.reply(pseudo,message).then((reply)=>this.emit(reply));
+    addBot(bot){
+        if(bot!==null){
+            this.bots.add(bot);
+            bot.connect("http://localhost:"+this.port+"/");
+            socket.broadcast.emit('nouveau_client', bot.getName());
         }else{
-            console.log("you can't receive messages if you aren't connected yet");
+            console.log("you tried to add a null bot to the salon "+this.name+" at port "+this.port);
         }
     }
 
-    emit(reply){
-        console.log("The bot says: " + reply);
-        this.botsocket.emit('message', reply);
+    getBot(name){
+        for(var bot in bots){
+            if(name===bot.getName()){
+                return bot;
+            }
+        }
+        return null;
     }
-    
+
+    removeBot(botName){
+        for(var bot in this.bots){
+            if(bot.getName()===botName){
+                bots.delete(bot);
+            }
+        }
+    }
+
+
 }
