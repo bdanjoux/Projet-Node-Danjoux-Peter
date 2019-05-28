@@ -4,7 +4,7 @@ var io = require('socket.io').listen(server);
 var DanjouxPeterSalon = require("./salon.js");
 var DanjouxPeterBot = require("./bot.js");
 
-module.exports = class DanjouxPeterSalon{
+module.exports = class Manager{
 
     constructor(){
         this.salons = new Set();
@@ -46,8 +46,9 @@ module.exports = class DanjouxPeterSalon{
 
     addSalon(name,port){
         var newSalon = new DanjouxPeterSalon(name,port);
+        console.log("added salon "+newSalon.getName());
         this.salons.add(newSalon);
-        console.log("added salon "+name);
+
     }
 
 

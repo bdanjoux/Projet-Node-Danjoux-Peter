@@ -14,11 +14,9 @@ module.exports = class DanjouxPeterSalon{
         
         server.listen(port);
 
-
-
         // Chargement de la page index.html
         app.get('/', function (req, res) {
-          res.sendfile(__dirname + '/index.html',{port:this.port});
+          res.sendfile(__dirname + '/index.html',{port:port});
         });
 
         io.sockets.on('connection', function (socket, pseudo) {
@@ -49,6 +47,10 @@ module.exports = class DanjouxPeterSalon{
     // to move to the salonManager
     getPort(){
         return this.port;
+    }
+
+    getName(){
+        return this.name;
     }
     
     addBot(bot){
