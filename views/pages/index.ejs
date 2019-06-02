@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+<header>
+    <% include ../partials/header %>
+</header>
+
+<main>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="jumbotron">
+                <h1>Welcome to ChatBot</h1>
+                <p>An interactive website where you can chat with bots !</p>
+            </div>
+            <div><a href="/botAdmin">Administrate bots</a></div>
+            <div><a href="/botLobby">Go to lobby</a></div>
+        </div>
+        <div class="col-sm-4">
+         <div class="well">
+             <h3>Log in</h3>
+                <form method='post' action='/submit_logIn'>
+                <input type="username" name="username" placeholder="username" required>
+                <input type="password" name="password" placeholder="password" required>
+                <button type="submit">submit</button>
+            </form>
+
+            <h3>Sign in</h3>
+            <form method='post' action='/submit_signIn'>
+                <input type="username" name="username" placeholder="username" required>
+                <input type="password" name="password" placeholder="password" required>
+                <button type="submit">submit</button>
+            </form>
+         </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <% include ../partials/footer %>
+</footer>
+
+</body>
+</html>
