@@ -35,7 +35,11 @@ let User = new mongoose.model("user", {
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-// use res.render to load up an ejs view file
+var isLogged = false;
+var isSigned = false;
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, "MongoDB connection error : "));
 
 //Template
 app.set('view engine', 'ejs');
@@ -49,7 +53,14 @@ app.set('views', __dirname + '/views');
 
 // index page
 app.get('/', function(req, res) {
-    res.render('pages/index');
+    sess = req.session.user;
+
+    if(!isLogged){
+        res.render('pages/index');
+    }
+    else {
+        res.render('pages/activity', {username: req.query.username});
+    }
 });
 
 // about page
@@ -65,6 +76,12 @@ app.get('/botLobby', function(req, res){
 // admin page
 app.get('/botAdmin', function(req, res) {
     res.render('pages/botAdmin.ejs');
+});
+
+app.get('/logout', function(req, res){
+    req.session.destroy();
+    isLogged = false;
+    res.render('/');
 });
 
 //post
@@ -102,7 +119,6 @@ app.post('/submit_signIn', function(req, res, next){
             isSigned = true;
         } else {
             console.log("Pseudo déjà utilisé !");
-            alert("this username is not available")
             res.render('pages/index.ejs');
         }
     })

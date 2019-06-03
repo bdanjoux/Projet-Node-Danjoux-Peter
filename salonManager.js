@@ -38,7 +38,7 @@ module.exports = class DanjouxPeterSalon{
             }
         });
 
-    }
+        };
 
 
 
@@ -48,4 +48,5 @@ module.exports = class DanjouxPeterSalon{
         this.bot.loadFile(filepath).then(()=>this.loading_done()).catch(()=>this.loading_error_file());
     }
     
+}
 }
