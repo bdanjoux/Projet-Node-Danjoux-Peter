@@ -44,18 +44,20 @@ module.exports = class Manager{
     }
 
 
-    addSalon(name,port){
+    addSalon(name,port,callback){
         var newSalon = new DanjouxPeterSalon(name,port);
         console.log("added salon "+newSalon.getName());
         this.salons.add(newSalon);
-
+        callback();
     }
 
 
     getSalon(port){
+        console.log('going through salon');
         for(var salon of this.salons){
+            console.log('salon '+salon.getName());
             if(salon!=null){
-                if(()=>salon.getPort()==port){
+                if(salon.getPort()==port){
                     return salon;
                 }
             }
@@ -68,29 +70,31 @@ module.exports = class Manager{
         this.unassignedBots.add(newBot);
     }
 
-    addBotToSalon(name,port){
+    addBotToSalon(name,port,callback){
         var newBot = new DanjouxPeterBot(name);
-        var theSalon = ()=>this.getSalon(port);
-        if(theSalon===null){
+        var theSalon = this.getSalon(port);
+        console.log('the salon '+theSalon);
+        if(theSalon==null){
             console.log("adding the newly created bot to the pool of unassigned bots")    
             unassignedBots.add(newBot);
         }else{
-            ()=>theSalon.addBot(newBot);
+            theSalon.addBot(newBot);
             console.log("adding the newly created bot to the wanted salon")    
         }
+        callback();
     }
 
     botInSalonLoadDirectory(botName,port,directory){
-        ()=>done = false;
-        ()=>salon = this.getSalon(port);
-        if(()=>salon != null){
-            ()=>bot = salon.getBot(botName);
-            if(()=>bot!= null){
-                ()=>bot.loadDirectory(directory);
-                ()=>done = true;
+        var done = false;
+        var salon = this.getSalon(port);
+        if(salon != null){
+            var bot = salon.getBot(botName);
+            if(bot!= null){
+                bot.loadDirectory(directory);
+                done = true;
             }
         }
-        return ()=>done;
+        return done;
     }
 
 }

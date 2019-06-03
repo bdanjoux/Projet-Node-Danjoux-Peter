@@ -1,8 +1,12 @@
 
 var Manager = require("./Manager.js");
+//require("./server.js");
 
 var manager = new Manager();
 
-manager.addSalon("mon premier salon",8080);
-manager.addBotToSalon("george",8080);
-manager.botInSalonLoadDirectory("george",8080,"brain");
+manager.addSalon("mon premier salon",8081,function(){
+	manager.addBotToSalon("george",8081,function(){
+		manager.botInSalonLoadDirectory("george",8081,"brain");
+	});	
+});
+

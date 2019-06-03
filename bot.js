@@ -10,11 +10,13 @@ module.exports = class DanjouxPeterBot{
     }
 
     loadFile(filepath){
-        this.bot.loadFile(filepath).then(()=>this.loading_done()).catch(()=>this.loading_error_file());
+        var thenThing = this.loading_done().bind(this);
+        this.bot.loadFile(filepath).then(thenThing());
     }
 
     loadDirectory(directorypath){
-        this.bot.loadDirectory(directorypath).then(()=>this.loading_done()).catch(()=>this.loading_error_dir());
+        console.log('loading directory');
+        this.bot.loadDirectory(directorypath).then(thenThing());        
     }
 
     loading_done(){
@@ -34,9 +36,10 @@ module.exports = class DanjouxPeterBot{
         /*if(this.botsocket!==null){
             this.botsocket.disconnect();
         }*/
+        console.log('bot '+this.getName()+' trying to connect');
         this.botsocket = client.connect(address);
         if(this.botsocket!==null){
-            connected = true;
+            this.connected = true;
         }
         this.botsocket.emit('nouveau_client', "bot "+this.name);
     }
@@ -47,7 +50,7 @@ module.exports = class DanjouxPeterBot{
     }
 
     reply(pseudo,message){
-        if(this.botsocket!==null && this.connected){
+        if(this.botsocket!=null && this.connected){
             this.bot.reply(pseudo,message).then((reply)=>this.emit(reply));
         }else{
             console.log("you can't receive messages if you aren't connected yet");
@@ -55,7 +58,7 @@ module.exports = class DanjouxPeterBot{
     }
 
     emit(reply){
-        if(this.botsocket!==null && this.connected){
+        if(this.botsocket!=null && this.connected){
             console.log("The bot says: " + reply);
             this.botsocket.emit('message', reply);
         }else{
