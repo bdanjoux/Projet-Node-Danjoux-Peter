@@ -48,26 +48,30 @@ module.exports = class Manager{
         var newSalon = new DanjouxPeterSalon(name,port);
         console.log("added salon "+newSalon.getName());
         this.salons.add(newSalon);
-        callback();
+        if(callback!=null){
+            callback();    
+        }
     }
 
 
     getSalon(port){
         console.log('going through salon');
-        for(var salon of this.salons){
+        var ret=null;
+        this.salons.forEach(function(key,salon,set){
             console.log('salon '+salon.getName());
             if(salon!=null){
                 if(salon.getPort()==port){
-                    return salon;
+                    ret = salon;
                 }
             }
-        }
-        return null;
+        });
+        return ret;
     }
     
-    addBot(name){
+    addBot(name,callback){
         newBot = new DanjouxPeterBot(name);
         this.unassignedBots.add(newBot);
+        callback();
     }
 
     addBotToSalon(name,port,callback){
@@ -85,6 +89,7 @@ module.exports = class Manager{
     }
 
     botInSalonLoadDirectory(botName,port,directory){
+        console.log("botInSalonLoadDirectory");
         var done = false;
         var salon = this.getSalon(port);
         if(salon != null){

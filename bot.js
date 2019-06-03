@@ -7,21 +7,25 @@ module.exports = class DanjouxPeterBot{
         this.name = name;
         this.connected = false;
         this.botsocket = null;
+        this.port=null;
     }
 
     loadFile(filepath){
-        var thenThing = this.loading_done().bind(this);
+        console.log('loading file');
+        var thenThing = this.loading_done.bind(this);
         this.bot.loadFile(filepath).then(thenThing());
     }
 
     loadDirectory(directorypath){
         console.log('loading directory');
-        this.bot.loadDirectory(directorypath).then(thenThing());        
+        var thenThing = this.loading_done.bind(this);
+        this.bot.loadDirectory(directorypath).then(thenThing());
+        this.bot.sortReplies();
     }
 
     loading_done(){
-        console.log("Bot "+this.name+" has finished loading!");
         this.bot.sortReplies();
+        console.log("Bot "+this.name+" has finished loading!");
     }
 
     loading_error_file(error, filename, lineno){
@@ -30,14 +34,15 @@ module.exports = class DanjouxPeterBot{
 
     loading_error_dir(error, filename, lineno){
         console.log("Bot "+this.name+" Had an error when loading dir: " + error);   
-    }
+    }       
 
-    connect(address){
+    connect(address,port){
         /*if(this.botsocket!==null){
             this.botsocket.disconnect();
         }*/
         console.log('bot '+this.getName()+' trying to connect');
         this.botsocket = client.connect(address);
+        this.port = port;
         if(this.botsocket!==null){
             this.connected = true;
         }
@@ -50,14 +55,23 @@ module.exports = class DanjouxPeterBot{
     }
 
     reply(pseudo,message){
+        this.bot.sortReplies();
+        console.log("bot reply, pseudo "+pseudo+" message "+message);
+        var thisEmit = this.emit.bind(this);
         if(this.botsocket!=null && this.connected){
-            this.bot.reply(pseudo,message).then((reply)=>this.emit(reply));
+            this.bot.reply(pseudo,message).then(function(reply){
+                console.log("reply "+reply);
+                thisEmit(reply);}
+            ).catch(function(e){
+                console.log(e);
+            });
         }else{
             console.log("you can't receive messages if you aren't connected yet");
         }
     }
 
     emit(reply){
+        console.log('bot emit : '+reply);
         if(this.botsocket!=null && this.connected){
             console.log("The bot says: " + reply);
             this.botsocket.emit('message', reply);
