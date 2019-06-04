@@ -9,10 +9,16 @@ module.exports = class DanjouxPeterSalon{
         var server = require('http').createServer(app);
         var DanjouxPeterBot = require("./bot.js");
         var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+        
         console.log("listening on port "+port);
+
+        
+
         this.name = name;
         this.port = port;
         this.bots = new Set();
+        this.discordClient = null;
+        this.discordMessageQueue = new Array();
         
         server.listen(port);
         var io = require('socket.io').listen(server);
@@ -24,6 +30,7 @@ module.exports = class DanjouxPeterSalon{
         });
 
         var rply = this.replyToBots.bind(this); 
+        var discordRply = this.sendToDiscord.bind(this); 
 
         io.sockets.on('connection', function (socket, pseudo) {
             // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
@@ -40,6 +47,7 @@ module.exports = class DanjouxPeterSalon{
                 socket.broadcast.to(port).emit('message', {pseudo: socket.pseudo, message: message});
                 console.log("pseudo: " + socket.pseudo);
                 // On envoie le message à tous les bots qui ne sont pas celui qui a envoyé le message
+                discordRply(message);
                 rply(socket.pseudo,message);
             });
         });
@@ -59,6 +67,35 @@ module.exports = class DanjouxPeterSalon{
             callback(this.name);
         }
         return this.name;
+    }
+
+    connectDiscord(){
+        var Discord = require('discord.js');
+        this.discordClient = new Discord.Client();
+        this.discordMessageQueue = new Array();
+        this.discordClient.on('ready', () => {
+          console.log('Connected to Discord');
+        });
+
+        // Create an event listener for messages
+        this.discordClient.on('message', message => {
+          // If the message is "ping"
+          this.discordMessageQueue.push(message);
+          this.replyToBots(message.author,message.content);
+        });
+
+        // Log our bot in using the token from https://discordapp.com/developers/applications/me
+        this.discordClient.login('NTg1NDY0Nzc5MTk2NTk2MjI0.XPZ37g.HYd-OPKtzYIT5fjU6Qjw8wKw7sI');
+
+    }
+
+    sendToDiscord(message){
+        if(this.discordClient!=null){
+            if(this.discordMessageQueue.length>0){
+                var discordMessage = this.discordMessageQueue.shift();
+                discordMessage.channel.send(message);
+            }
+        }
     }
 
     toString(callback){
@@ -122,8 +159,16 @@ module.exports = class DanjouxPeterSalon{
 
     replyToBots(author,message,callback){
         console.log('going through bots');
+        var that =this;
         this.bots.forEach(function(key,bot,set){
-            if("bot "+bot.getName()!=author){
+            var ok = true;
+            if(that.discordClient!=null){
+                console.log("author "+author+" discordClientId "+that.discordClient.user.id);
+                if(author.toString().includes(that.discordClient.user.id.toString())){
+                    ok=false;    
+                }
+            }
+            if("bot "+bot.getName()!=author && ok){
                 console.log('found bot to reply to, author '+author+' message '+message);
                 bot.reply(author, message);
             }
