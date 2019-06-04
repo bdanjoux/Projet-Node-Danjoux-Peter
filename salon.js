@@ -47,19 +47,28 @@ module.exports = class DanjouxPeterSalon{
 
 
     // to move to the salonManager
-    getPort(){
+    getPort(callback){
+        if(callback!=null){
+            callback(this.port);
+        }
         return this.port;
     }
 
-    getName(){
+    getName(callback){
+        if(callback!=null){
+            callback(this.name);
+        }
         return this.name;
     }
 
-    toString(){
+    toString(callback){
+        if(callback!=null){
+            callback(this.name);
+        }
         return this.name;   
     }
     
-    addBot(bot){
+    addBot(bot,callback){
         console.log('salon add bot');
         if(bot!=null){
             console.log('adding bot '+bot.getName()+' to bots in salon '+ this.getName());
@@ -69,10 +78,12 @@ module.exports = class DanjouxPeterSalon{
             bot.connect("http://localhost:"+this.port+"/",this.port);
         }else{
             console.log("you tried to add a null bot to the salon "+this.name+" at port "+this.port);
+        }if(callback!=null){
+            callback();
         }
     }
 
-    getBot(name){
+    getBot(name,callback){
         console.log("getBot");
         var ret=null;
         this.bots.forEach(function(key,bot,set){
@@ -80,34 +91,46 @@ module.exports = class DanjouxPeterSalon{
                 ret = bot;
             }    
         });
+        if(callback!=null){
+            callback(ret);
+        }
         return ret;
     }
 
-    getBotNames(){
+    getBotNames(callback){
         var ret = new Array();
         this.bots.forEach(function(key,bot,set){
             ret.push(bot.getName());
         });
+        if(callback!=null){
+            callback(ret);
+        }
         return ret;
     }
 
-    removeBot(botName){
+    removeBot(botName,callback){
         this.bots.forEach(function(key,bot,set){
             if(bot.getName()===botName){
                 bot.disconnect();
                 set.delete(key);
             }    
         });
+        if(callback!=null){
+            callback();
+        }
     }
 
-    replyToBots(author,message){
+    replyToBots(author,message,callback){
         console.log('going through bots');
         this.bots.forEach(function(key,bot,set){
             if("bot "+bot.getName()!=author){
                 console.log('found bot to reply to, author '+author+' message '+message);
                 bot.reply(author, message);
             }
-        })
+        });
+        if(callback!=null){
+            callback();
+        }
     }
 
 }

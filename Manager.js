@@ -54,7 +54,7 @@ module.exports = class Manager{
     }
 
 
-    getSalon(port){
+    getSalon(port,callback){
         console.log('going through salon');
         var ret=null;
         this.salons.forEach(function(key,salon,set){
@@ -65,6 +65,9 @@ module.exports = class Manager{
                 }
             }
         });
+        if(callback!=null){
+            callback(ret);
+        }
         return ret;
     }
     
@@ -88,7 +91,15 @@ module.exports = class Manager{
         callback();
     }
 
-    moveBotFromSalonToSalon(name,port1,port2){
+    addBotToManager(name,callback){
+        var newBot = new DanjouxPeterBot(name);
+        this.unassignedBots.add(bot);
+        if(callback!=null){
+            callback();
+        }
+    }
+
+    moveBotFromSalonToSalon(name,port1,port2,callback){
         var salon1 = this.getSalon(port1);
         var salon2 = this.getSalon(port2);
         if(salon1!=null && salon2!=null){
@@ -99,9 +110,42 @@ module.exports = class Manager{
                 salon2.addBot(bot);
             }
         }
+        if(callback!=null){
+            callback();
+        }
     }
 
-    botInSalonLoadDirectory(botName,port,directory){
+    moveBotFromSalonToManager(name,port,callback){
+        var salon = this.getSalon(port);
+        if(salon!=null){
+            var bot = salon.getBot(name);
+            if(bot!=null){
+                bot.disconnect();
+                salon.removeBot(name);
+                this.unassignedBots.add(bot);
+            }
+        }
+        if(callback!=null){
+            callback();
+        }
+    }
+
+    moveBotFromManagerToSalon(name,port,callback){
+        var salon = this.getSalon(port);
+        if(salon!=null){
+            var bot = this.getBotFromManager(name);
+            if(bot!=null){
+                bot.disconnect();
+                this.removeBotFromManager(name);
+                salon.addBot(bot);
+            }
+        }
+        if(callback!=null){
+            callback();
+        }
+    }
+
+    botInSalonLoadDirectory(botName,port,directory,callback){
         console.log("botInSalonLoadDirectory");
         var done = false;
         var salon = this.getSalon(port);
@@ -112,7 +156,48 @@ module.exports = class Manager{
                 done = true;
             }
         }
+        if(callback!=null){
+            callback(done);
+        }
         return done;
     }
 
+    getBotFromManager(name,callback){
+        ret = null;
+        unassignedBots.forEach(function(key,bot,set){
+            if(bot.getName()==name){
+                ret=bot;
+            }
+        });
+        if(callback!=null){
+            callback(ret);
+        }
+        return ret;
+    }
+
+    removeBotFromManager(name,callback){
+        ret = false;
+        unassignedBots.forEach(function(key,bot,set){
+            if(bot.getName()==name){
+                set.delete(key);
+                ret=true;
+            }
+        });
+        if(callback!=null){
+            callback(ret);
+        }
+        return ret;
+    }
+
+    getAllBotNames(){
+        var ret = new Array();
+        this.salons.forEach(function(key,salon,set){
+            var salonName = salon.getName();
+            var salonPort = salon.getPort();
+            salon.getBotNames().forEach(function(botName){;
+                ret.push({salonName,botName,salonPort});
+            });
+        });
+        return ret;
+    }
 };

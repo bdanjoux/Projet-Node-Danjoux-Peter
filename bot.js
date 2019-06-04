@@ -36,7 +36,7 @@ module.exports = class DanjouxPeterBot{
         console.log("Bot "+this.name+" Had an error when loading dir: " + error);   
     }       
 
-    connect(address,port){
+    connect(address,port,callback){
         /*if(this.botsocket!==null){
             this.botsocket.disconnect();
         }*/
@@ -47,14 +47,20 @@ module.exports = class DanjouxPeterBot{
             this.connected = true;
         }
         this.botsocket.emit('nouveau_client', "bot "+this.name);
+        if(callback!=null){
+            callback();
+        }
     }
 
-    disconnect(){
+    disconnect(callback){
         this.botsocket = null;
         this.connected = false;
+        if(callback!=null){
+            callback();
+        }
     }
 
-    reply(pseudo,message){
+    reply(pseudo,message,callback){
         this.bot.sortReplies();
         console.log("bot reply, pseudo "+pseudo+" message "+message);
         var thisEmit = this.emit.bind(this);
@@ -67,21 +73,28 @@ module.exports = class DanjouxPeterBot{
             });
         }else{
             console.log("you can't receive messages if you aren't connected yet");
+        }if(callback!=null){
+            callback();
         }
     }
 
-    emit(reply){
+    emit(reply,callback){
         console.log('bot emit : '+reply);
         if(this.botsocket!=null && this.connected){
             console.log("The bot says: " + reply);
             this.botsocket.emit('message', reply);
         }else{
             console.log("The bot can't say anything if it's not connected");   
-        }   
+        }   if(callback!=null){
+            callback();
+        }
     }
 
-    getName(){
+    getName(callback){
         return this.name;
+        if(callback!=null){
+            callback();
+        }
     }
     
 }
