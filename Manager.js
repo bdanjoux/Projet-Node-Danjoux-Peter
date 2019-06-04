@@ -69,7 +69,7 @@ module.exports = class Manager{
     }
     
     addBot(name,callback){
-        newBot = new DanjouxPeterBot(name);
+        var newBot = new DanjouxPeterBot(name);
         this.unassignedBots.add(newBot);
         callback();
     }
@@ -115,4 +115,4 @@ module.exports = class Manager{
         return done;
     }
 
-}
+};
