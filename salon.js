@@ -84,16 +84,17 @@ module.exports = class DanjouxPeterSalon{
     }
 
     getBotNames(){
-        ret = new Array();
+        var ret = new Array();
         this.bots.forEach(function(key,bot,set){
             ret.push(bot.getName());
-        }
+        });
         return ret;
     }
 
     removeBot(botName){
         this.bots.forEach(function(key,bot,set){
             if(bot.getName()===botName){
+                bot.disconnect();
                 set.delete(key);
             }    
         });
