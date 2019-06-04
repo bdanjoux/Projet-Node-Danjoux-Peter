@@ -83,12 +83,20 @@ module.exports = class DanjouxPeterSalon{
         return ret;
     }
 
-    removeBot(botName){
-        for(var bot in this.bots){
-            if(bot.getName()===botName){
-                bots.delete(bot);
-            }
+    getBotNames(){
+        ret = new Array();
+        this.bots.forEach(function(key,bot,set){
+            ret.push(bot.getName());
         }
+        return ret;
+    }
+
+    removeBot(botName){
+        this.bots.forEach(function(key,bot,set){
+            if(bot.getName()===botName){
+                set.delete(key);
+            }    
+        });
     }
 
     replyToBots(author,message){

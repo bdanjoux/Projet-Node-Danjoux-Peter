@@ -88,6 +88,19 @@ module.exports = class Manager{
         callback();
     }
 
+    moveBotFromSalonToSalon(name,port1,port2){
+        var salon1 = this.getSalon(port1);
+        var salon2 = this.getSalon(port2);
+        if(salon1!=null && salon2!=null){
+            var bot = salon1.getBot(name);
+            if(bot!=null){
+                bot.disconnect();
+                salon1.removeBot(name);
+                salon2.addBot(bot);
+            }
+        }
+    }
+
     botInSalonLoadDirectory(botName,port,directory){
         console.log("botInSalonLoadDirectory");
         var done = false;

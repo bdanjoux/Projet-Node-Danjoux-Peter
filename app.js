@@ -11,8 +11,6 @@ manager.addSalon("mon premier salon",8081,function(){
 });
 
 manager.addSalon("mon deuxieme salon",8083,function(){
-	manager.addBotToSalon("claraa",8083,function(){
-		manager.botInSalonLoadDirectory("claraa",8083,"brain");
-	});	
+	manager.moveBotFromSalonToSalon("george",8081,8083);
 });
 
