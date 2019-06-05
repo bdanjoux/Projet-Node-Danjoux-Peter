@@ -74,7 +74,9 @@ module.exports = class Manager{
     addBot(name,callback){
         var newBot = new DanjouxPeterBot(name);
         this.unassignedBots.add(newBot);
-        callback();
+        if(callback != null){
+            callback();
+        }
     }
 
     addBotToSalon(name,port,callback){
@@ -88,7 +90,9 @@ module.exports = class Manager{
             theSalon.addBot(newBot);
             console.log("adding the newly created bot to the wanted salon")    
         }
-        callback();
+        if(callback != null){
+            callback();
+        }
     }
 
     addBotToManager(name,callback){
@@ -163,7 +167,7 @@ module.exports = class Manager{
     }
 
     getBotFromManager(name,callback){
-        ret = null;
+        var ret = null;
         unassignedBots.forEach(function(key,bot,set){
             if(bot.getName()==name){
                 ret=bot;
@@ -176,7 +180,7 @@ module.exports = class Manager{
     }
 
     removeBotFromManager(name,callback){
-        ret = false;
+        var ret = false;
         unassignedBots.forEach(function(key,bot,set){
             if(bot.getName()==name){
                 set.delete(key);
@@ -189,14 +193,24 @@ module.exports = class Manager{
         return ret;
     }
 
-    getAllBotNames(){
+    getAllBotNames(){ //retourne uniquement les noms des bots qui sont dans un salon
         var ret = new Array();
         this.salons.forEach(function(key,salon,set){
             var salonName = salon.getName();
             var salonPort = salon.getPort();
-            salon.getBotNames().forEach(function(botName){;
+            salon.getBotNames().forEach(function(botName){
                 ret.push({salonName,botName,salonPort});
             });
+        });
+        return ret;
+    }
+
+    getAllSalonNames(){
+        var ret = new Array();
+        this.salons.forEach(function(key, salon, set){
+            var salonName = salon.getName();
+            var salonPort = salon.getPort();
+            ret.push({salonName, salonPort});
         });
         return ret;
     }

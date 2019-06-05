@@ -3,7 +3,7 @@
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-
+var Manager = require("./Manager.js");
 var app = express();
 
 app.use(session({
@@ -11,7 +11,7 @@ app.use(session({
     secret: 'Tolkien', //salt for the hash
     resave: false,
     saveUnitialized:false
-}));
+})); //TODO: trouver comment enregistrer le username dans le cookie de session
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -40,6 +40,18 @@ var isSigned = false;
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, "MongoDB connection error : "));
+
+
+var manager = new Manager();
+
+manager.addSalon("mon premier salon",8081,function(){
+    manager.addBotToSalon("george",8081,function(){
+        manager.botInSalonLoadDirectory("george",8081,"brain");
+    });
+    manager.addBotToSalon("clara",8081,function(){
+        manager.botInSalonLoadDirectory("clara",8081,"brain");
+    });
+});
 
 //Template
 app.set('view engine', 'ejs');
@@ -78,10 +90,24 @@ app.get('/botAdmin', function(req, res) {
     res.render('pages/botAdmin.ejs');
 });
 
+//bot create page
+app.get('/botCreate', function(req, res){
+   res.render('pages/botCreate.ejs');
+});
+
+// admin page
+app.get('/allBotNames', function(req, res) {
+    res.send(JSON.stringify(manager.getAllBotNames()));
+});
+
+app.get('/allSalonNames', function(req, res){
+    res.send(JSON.stringify(manager.getAllSalonNames()));
+});
+
 app.get('/logout', function(req, res){
     req.session.destroy();
     isLogged = false;
-    res.render('/');
+    res.render('pages/index.ejs');
 });
 
 //post
@@ -124,6 +150,12 @@ app.post('/submit_signIn', function(req, res, next){
     })
 });
 
+app.post('/createBot', function(req, res, next){
+    manager.addBot(req.body.botName);//TODO: récupérer les trucs du fichier botCreate
+    manager.addBotToSalon(req.body.botName,8081);
+    console.log(manager.getAllBotNames());
+    res.render('pages/about');
+});
 
 
 app.listen(8080);

@@ -13,12 +13,34 @@
     <div class="jumbotron">
         <h2 >Bot administration</h2>
         <p>Choose which bot you want to administrate</p>
-        <form>
-            <select name="chatbot">
 
-            </select>
-        </form>
+        <div id="listeBots"></div>
+
+        <button></button>
+
+        <script>
+            var solBotsArray2;
+
+            var botRequest = new Request("allBotNames");
+            fetch(botRequest).then(function (responsz) {
+                return responsz.json();}).then(function (blob) {
+                solBotsArray2 = blob;
+                console.log(blob);
+
+                var text = "<form method = \"post\"><select name=\"bots\" size=\"1\">";
+                solBotsArray2.forEach(function(elt){
+                    text+="<option>["+elt.salonName+"] "+elt.botName;
+                });
+                text+="</select></form>";
+
+                document.getElementById("listeBots").innerHTML = text;
+            });
+
+
+
+        </script>
     </div>
+
 
 </main>
 
