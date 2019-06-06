@@ -30,7 +30,7 @@
             solSalonArray = blob;
             console.log(blob);
 
-            var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
+            var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" name=\"salonName\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
             solSalonArray.forEach(function(elt) {
                 text += "<option>" + elt.salonName;
             });

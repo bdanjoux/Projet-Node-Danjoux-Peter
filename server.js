@@ -151,8 +151,14 @@ app.post('/submit_signIn', function(req, res, next){
 });
 
 app.post('/createBot', function(req, res, next){
-    manager.addBot(req.body.botName);//TODO: récupérer les trucs du fichier botCreate
-    manager.addBotToSalon(req.body.botName,8081);
+    if(req.body.salonName = "No lobby")
+    {
+        manager.addBot(req.body.botName);
+    }
+    else
+    {
+        manager.addBotToSalon(req.body.botName, req.body.salonName);
+    }
     console.log(manager.getAllBotNames());
     res.render('pages/about');
 });
