@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+<header>
+    <% include ../partials/header %>
+</header>
+
+<main>
+    <div class="jumbotron">
+        <h2>Create a lobby</h2>
+            <label for="salonName">Name of the lobby: </label>
+        <form method="post" action="/createSalon">
+            <input type="string" name="salonName" required>
+            <label for="salonPort">Port: </label>
+            <input type="number" name="salonPort" required>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+
+    <script>
+        var solSalonArray;
+
+
+        function refreshSalons(){
+            var salonRequest = new Request("allSalonNames");
+            fetch(salonRequest).then(function (response){
+                return response.json();}).then(function (blob){
+                solSalonArray = blob;
+                console.log(blob);
+
+                var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
+                solSalonArray.forEach(function(elt) {
+                    text += "<option>" + elt.salonName;
+                });
+                text+="</select></form>";
+
+                document.getElementById("listeSalons").innerHTML = text;
+            });
+        }
+        refreshSalons();
+
+    </script>
+</main>
+
+<footer>
+    <% include ../partials/footer %>
+</footer>
+
+</body>
+</html>

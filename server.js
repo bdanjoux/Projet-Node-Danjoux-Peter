@@ -95,6 +95,11 @@ app.get('/botCreate', function(req, res){
    res.render('pages/botCreate.ejs');
 });
 
+//salon create page
+app.get('/salonCreate', function(req, res){
+    res.render('pages/salonCreate.ejs');
+});
+
 // admin page
 app.get('/allBotNames', function(req, res) {
     res.send(JSON.stringify(manager.getAllBotNames()));
@@ -174,6 +179,12 @@ app.post('/createBot', function(req, res, next){
     res.render('pages/createSuccess.ejs');
 });
 
+app.post('/createSalon', function(req, res, next){
+    manager.addSalon(req.body.salonName, req.body.salonPort);
+    console.log(manager.getAllSalonNames());
+    res.render('pages/createSuccess.ejs');
+});
+
 app.post('/botInSalonLoadFile', function(req, res, next){
     console.log("");
     manager.botInSalonLoadFile(req.body.name,parseInt(req.body.port),req.body.configFile);//TODO: récupérer les trucs du fichier botCreate
@@ -185,6 +196,8 @@ app.post('/chat', function(req, res, next){
     var url = "http://localhost:"+port;
     res.redirect(url);
 });
+
+
 
 app.listen(8080);
 console.log('8080 is the magic port');

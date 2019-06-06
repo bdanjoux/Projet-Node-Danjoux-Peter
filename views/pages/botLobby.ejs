@@ -32,9 +32,10 @@
                 solSalonArray = blob;
                 console.log(blob);
 
+                var i=0;
                 var text = "<form id=\"salon\" name=\"salonName\" method = \"post\"><select name=\"salon\" size=\"1\">";
                 solSalonArray.forEach(function(elt) {
-                    text += "<option>" + elt.salonName;
+                    text += "<option value=\""+i+"\">" + elt.salonName;
                 });
                 text+="</select></form>";
 
@@ -42,7 +43,8 @@
             });
 
             $('#bouton_chat').submit(function () {
-                var port = solSalonArray[0].salonPort;
+                console.log($("#bouton_chat :selected").val());
+                var port = solSalonArray[$("#bouton_chat :selected").val()].salonPort;
                 $.each([{'name' : 'port', 'value' : port}], function(i,param){
                     $('<input/>').attr('type', 'hidden')
                         .attr('name', param.name)
