@@ -202,6 +202,12 @@ module.exports = class Manager{
                 ret.push({salonName,botName,salonPort});
             });
         });
+        this.unassignedBots.forEach(function(key,bot,set){
+            var salonName = "non assigné";
+            var salonPort = 0;
+            var botName = bot.getName();
+            ret.push({salonName,botName,salonPort});
+        });
         return ret;
     }
 
