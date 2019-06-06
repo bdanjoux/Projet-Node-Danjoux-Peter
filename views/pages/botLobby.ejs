@@ -9,11 +9,13 @@
     <% include ../partials/header %>
 </header>
 
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
 <main>
     <div class="jumbotron">
      <h1>Lobby</h1>
      <p>Choose the lobby you want to chat in: </p>
-        <form method="post" action="/chat">
+        <form method="post" action="/chat" id="bouton_chat">
             <label for="listeSalons">Choose a lobby: </label>
             <div id="listeSalons"></div>
             <input type="submit" value="Let's chat!">
@@ -38,15 +40,18 @@
 
                 document.getElementById("listeSalons").innerHTML = text;
             });
+
+            $('#bouton_chat').submit(function () {
+                var port = solSalonArray[0].salonPort;
+                $.each([{'name' : 'port', 'value' : port}], function(i,param){
+                    $('<input/>').attr('type', 'hidden')
+                        .attr('name', param.name)
+                        .attr('value', param.value)
+                        .appendTo('#bouton_chat');
+                });
+                return true;
+            });
         </script>
-
-
-        <!--
-        <form method="post" action="/chat">
-            <div id="listeBots"></div>
-            <input type="submit" value="Let's chat!">
-        </form>
-    </div>
 
 </main>
 

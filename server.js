@@ -183,9 +183,9 @@ app.post('/botInSalonLoadFile', function(req, res, next){
 });
 
 app.post('/chat', function(req, res, next){
-    var chatBot = req.body.botName;
-    //var port = ;
-    var url = "http://localhost/"+port;
+    var port = req.body.port;
+    var url = "http://localhost:"+port;
+    res.redirect(url);
 });
 
 app.listen(8080);
