@@ -24,20 +24,25 @@
     <script>
         var solSalonArray;
 
-        var salonRequest = new Request("allSalonNames");
-        fetch(salonRequest).then(function (response){
-            return response.json();}).then(function (blob){
-            solSalonArray = blob;
-            console.log(blob);
 
-            var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
-            solSalonArray.forEach(function(elt) {
-                text += "<option>" + elt.salonName;
-            });
-            text+="</select></form>";
+        function refreshSalons(){
+            var salonRequest = new Request("allSalonNames");
+            fetch(salonRequest).then(function (response){
+                return response.json();}).then(function (blob){
+                solSalonArray = blob;
+                console.log(blob);
 
-            document.getElementById("listeSalons").innerHTML = text;
-        });
+                var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
+                solSalonArray.forEach(function(elt) {
+                    text += "<option>" + elt.salonName;
+                });
+                text+="</select></form>";
+
+                document.getElementById("listeSalons").innerHTML = text;
+            });    
+        }
+        refreshSalons();
+        
     </script>
 </main>
 

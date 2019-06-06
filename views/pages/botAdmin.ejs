@@ -15,23 +15,26 @@
     <div class="jumbotron">
         <h2 >Bot administration</h2>
         <p>Choose which bot you want to administrate</p>
-
+        <h3 >Change a Bot's Brains</h3>
         <div id="listeBots"></div>
         <div id="listeConfigFiles"></div>
         <form action="/botInSalonLoadFile" method="post" id="bouton_brain">
             <input type="submit" id="chgt_brain" value="Changer Config" />
         </form>
+        <h3 >Move a Bot Between Lobbies</h3>
+        <div id ="listeSalons"></div>
+        <div id="listeBotsInSalon"></div>
 
         <button></button>
         
         
         <script>
+
+
             var solBotsArray2;
 
-            var botRequest = new Request("allBotNames");
-
-
             function refreshBots(){
+                var botRequest = new Request("allBotNames");
                 fetch(botRequest).then(function (responsz) {
                 return responsz.json();}).then(function (blob) {
                     solBotsArray2 = blob;
@@ -75,6 +78,50 @@
             }
 
             refreshConfigFiles();
+
+            var solSalonArray;
+
+
+            function refreshSalons(){
+                var salonRequest = new Request("allSalonNames");
+                fetch(salonRequest).then(function (response){
+                    return response.json();}).then(function (blob){
+                    solSalonArray = blob;
+                    console.log(blob);
+
+                    var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
+                    solSalonArray.forEach(function(elt) {
+                        text += "<option>" + elt.salonName;
+                    });
+                    text+="</select></form>";
+
+                    document.getElementById("listeSalons").innerHTML = text;
+                });    
+            }
+            refreshSalons();
+
+            var botsInSelectedSalon;
+
+            function refreshBotsInSelectedSalon(salon){
+                var botRequest = new Request("allBotNamesInSalon",{salon : salon});
+                fetch(botRequest).then(function (responsz) {
+                return responsz.json();}).then(function (blob) {
+                    botsInSelectedSalon = blob;
+                    console.log(blob);
+
+                    var text = "<form id=\"listeBotsInSalonForm\"><select name=\"bots\" size=\"1\">";
+                    var i=0;
+                    botsInSelectedSalon.forEach(function(elt){
+                        text+="<option value=\""+i+"\">["+elt.salonName+"] "+elt.botName;
+                        i=i+1;
+                    });
+                    text+="</select></form>";
+
+                    document.getElementById("listeBotsInSalon").innerHTML = text;
+                });
+            }
+            refreshBotsInSelectedSalon("No Lobby");
+
 
             $('#bouton_brain').submit(function () {
                 console.log($("#listeBotsForm :selected").val());
