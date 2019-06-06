@@ -233,6 +233,22 @@ module.exports = class Manager{
         return ret;
     }
 
+    getAllBotNamesInSalon(salonName){
+        var ret = new Array();
+        if(salonName.includes("No Lobby")){
+            unassignedBots.forEach(function(key,bot,set){
+                var name = bot.getName();
+                ret.push({name});
+            });
+        }else{
+            var salon  = this.getSalon(salonName);
+            salon.getBotNames().forEach(function(botName){
+                ret.push({botName});
+            });    
+        }
+        return ret;
+    }
+
     getAllSalonNames(){
         var ret = new Array();
         this.salons.forEach(function(key, salon, set){

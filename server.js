@@ -102,6 +102,11 @@ app.get('/allBotNames', function(req, res) {
     res.send(JSON.stringify(manager.getAllBotNames()));
 });
 
+app.get('/allBotNamesInSalon', function(req, res,next) {
+    res.send(JSON.stringify(manager.getAllBotNamesInSalon(req.query.salon)));
+    
+});
+
 // admin page
 app.get('/allConfigFiles', function(req, res) {
     res.send(JSON.stringify(manager.getAllAvailableConfigFiles()));
