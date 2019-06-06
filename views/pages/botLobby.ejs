@@ -12,14 +12,61 @@
 <main>
     <div class="jumbotron">
      <h1>Lobby</h1>
-     <p>Choose a bot you want to chat with</p>
-        <form>
-            <select name="chatbot">
-
-            </select>
+     <p>Choose the lobby you want to chat in: </p>
+        <form method="post" action="/chat">
+            <label for="listeSalons">Choose a lobby: </label>
+            <div id="listeSalons"></div>
+            <input type="submit" value="Let's chat!">
         </form>
     </div>
 
+
+        <script>
+            var solSalonArray;
+
+            var salonRequest = new Request("allSalonNames");
+            fetch(salonRequest).then(function (response){
+                return response.json();}).then(function (blob){
+                solSalonArray = blob;
+                console.log(blob);
+
+                var text = "<form id=\"salon\" name=\"salonName\" method = \"post\"><select name=\"salon\" size=\"1\">";
+                solSalonArray.forEach(function(elt) {
+                    text += "<option>" + elt.salonName;
+                });
+                text+="</select></form>";
+
+                document.getElementById("listeSalons").innerHTML = text;
+            });
+        </script>
+
+
+        <!--
+        <form method="post" action="/chat">
+            <div id="listeBots"></div>
+            <input type="submit" value="Let's chat!">
+        </form>
+    </div>
+
+    <script>
+        var solBotsArray2;
+
+        var botRequest = new Request("allBotNames");
+        fetch(botRequest).then(function (responsz) {
+            return responsz.json();}).then(function (blob) {
+            solBotsArray2 = blob;
+            console.log(blob);
+
+            var text = "<form method = \"post\"><select name=\"botName\" size=\"1\">";
+            solBotsArray2.forEach(function(elt){
+                text+="<option>["+elt.salonName+"] "+elt.botName;
+            });
+            text+="</select></form>";
+
+            document.getElementById("listeBots").innerHTML = text;
+        });
+    </script>
+    -->
 </main>
 
 <footer>

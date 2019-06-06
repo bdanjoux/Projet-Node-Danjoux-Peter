@@ -165,6 +165,11 @@ app.post('/createBot', function(req, res, next){
     res.render('pages/about');
 });
 
+app.post('/chat', function(req, res, next){
+    var chatBot = req.body.botName;
+    //var port = ;
+    var url = "http://localhost/"+port;
+});
 
 app.listen(8080);
 console.log('8080 is the magic port');
