@@ -50,9 +50,6 @@ manager.addSalon("mon premier salon",8081,function(){
     manager.addBotToSalon("george",8081,function(){
         manager.botInSalonLoadDirectory("george",8081,"brain");
     });
-    manager.addBotToSalon("clara",8081,function(){
-        manager.botInSalonLoadDirectory("clara",8081,"brain");
-    });
 });
 
 //Template
@@ -67,7 +64,7 @@ app.set('views', __dirname + '/views');
 
 // index page
 app.get('/', function(req, res) {
-    sess = req.session.user;
+    session.name = req.query.username;
 
     if(!isLogged){
         res.render('pages/index');
@@ -75,6 +72,7 @@ app.get('/', function(req, res) {
     else {
         res.render('pages/activity', {username: req.query.username});
     }
+    console.log(session.name);
 });
 
 // about page
@@ -173,7 +171,7 @@ app.post('/createBot', function(req, res, next){
         manager.addBotToSalon(req.body.botName, req.body.salonName);
     }
     console.log(manager.getAllBotNames());
-    res.render('pages/about');
+    res.render('pages/createSuccess.ejs');
 });
 
 app.post('/botInSalonLoadFile', function(req, res, next){
