@@ -9,34 +9,90 @@
     <% include ../partials/header %>
 </header>
 
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
 <main>
     <div class="jumbotron">
         <h2 >Bot administration</h2>
         <p>Choose which bot you want to administrate</p>
 
         <div id="listeBots"></div>
+        <div id="listeConfigFiles"></div>
+        <form action="/botInSalonLoadFile" method="post" id="bouton_brain">
+            <input type="submit" id="chgt_brain" value="Changer Config" />
+        </form>
 
         <button></button>
-
+        
+        
         <script>
             var solBotsArray2;
 
             var botRequest = new Request("allBotNames");
-            fetch(botRequest).then(function (responsz) {
+
+
+            function refreshBots(){
+                fetch(botRequest).then(function (responsz) {
                 return responsz.json();}).then(function (blob) {
-                solBotsArray2 = blob;
-                console.log(blob);
+                    solBotsArray2 = blob;
+                    console.log(blob);
 
-                var text = "<form method = \"post\"><select name=\"bots\" size=\"1\">";
-                solBotsArray2.forEach(function(elt){
-                    text+="<option>["+elt.salonName+"] "+elt.botName;
+                    var text = "<form id=\"listeBotsForm\"><select name=\"bots\" size=\"1\">";
+                    var i=0;
+                    solBotsArray2.forEach(function(elt){
+                        text+="<option value=\""+i+"\">["+elt.salonName+"] "+elt.botName;
+                        i=i+1;
+                    });
+                    text+="</select></form>";
+
+                    document.getElementById("listeBots").innerHTML = text;
                 });
-                text+="</select></form>";
+            }
 
-                document.getElementById("listeBots").innerHTML = text;
+            refreshBots();
+            
+
+            var configFiles;
+
+
+            function refreshConfigFiles(){
+                botRequest = new Request("allConfigFiles");
+                fetch(botRequest).then(function (responsz) {
+                    return responsz.json();}).then(function (blob) {
+                    configFiles = blob;
+                    console.log(blob);
+
+                    var text = "<form id=\"listeConfigFilesForm\" method = \"post\"><select name=\"bots\" size=\"1\">";
+                    var i=0;
+                    configFiles.forEach(function(elt){
+                        text+="<option value=\""+i+"\">"+elt.name;
+                        i=i+1;
+                    });
+                    text+="</select></form>";
+
+                    document.getElementById("listeConfigFiles").innerHTML = text;
+                })
+            }
+
+            refreshConfigFiles();
+
+            $('#bouton_brain').submit(function () {
+                console.log($("#listeBotsForm :selected").val());
+                console.log(solBotsArray2[$("#listeBotsForm :selected").val()]);
+                var port = solBotsArray2[$("#listeBotsForm :selected").val()].salonPort;
+                var bot = solBotsArray2[$("#listeBotsForm :selected").val()].botName;
+                var configFile = configFiles[$("#listeConfigFilesForm :selected").val()].name;
+
+                console.log('port '+port+' bot '+bot+' configFile '+configFile);
+
+                $.each([{'name' : 'port', 'value' : port},{'name' : 'name', 'value' : bot},{'name' : 'configFile', 'value' : configFile}], function(i,param){
+                    $('<input />').attr('type', 'hidden')
+                        .attr('name', param.name)
+                        .attr('value', param.value)
+                        .appendTo('#bouton_brain');
+                });
+                return true;
             });
-
-
 
         </script>
     </div>

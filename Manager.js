@@ -65,6 +65,11 @@ module.exports = class Manager{
                 }
             }
         });
+        if(ret==null){
+            console.log("didn't find salon");
+        }else{
+            console.log("found salon");
+        }
         if(callback!=null){
             callback(ret);
         }
@@ -166,6 +171,23 @@ module.exports = class Manager{
         return done;
     }
 
+    botInSalonLoadFile(botName,port,file,callback){
+        console.log("botInSalonLoadFile "+botName+" "+port+" "+file+" ");
+        var done = false;
+        var salon = this.getSalon(port);
+        if(salon != null){
+            var bot = salon.getBot(botName);
+            if(bot!= null){
+                bot.loadFile(file);
+                done = true;
+            }
+        }
+        if(callback!=null){
+            callback(done);
+        }
+        return done;
+    }
+
     getBotFromManager(name,callback){
         var ret = null;
         unassignedBots.forEach(function(key,bot,set){
@@ -218,6 +240,21 @@ module.exports = class Manager{
             var salonPort = salon.getPort();
             ret.push({salonName, salonPort});
         });
+        return ret;
+    }
+
+    getAllAvailableConfigFiles(){
+        var ret = new Array();
+        ret.push({'name' :'./brain/admin.rive'});
+        ret.push({'name' :'./brain/begin.rive'});
+        ret.push({'name' :'./brain/clients.rive'});
+        ret.push({'name' :'./brain/coffee.rive'});
+        ret.push({'name' :'./brain/eliza.rive'});
+        ret.push({'name' :'./brain/google.rive'});
+        ret.push({'name' :'./brain/javascript.rive'});
+        ret.push({'name' :'./brain/myself.rive'});
+        ret.push({'name' :'./brain/rpg.rive'});
+        ret.push({'name' :'./brain/test_suite.rive'});
         return ret;
     }
 };
