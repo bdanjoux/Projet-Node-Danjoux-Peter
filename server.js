@@ -102,8 +102,10 @@ app.get('/allBotNames', function(req, res) {
     res.send(JSON.stringify(manager.getAllBotNames()));
 });
 
-app.get('/allBotNamesInSalon', function(req, res,next) {
-    res.send(JSON.stringify(manager.getAllBotNamesInSalon(req.query.salon)));
+app.post('/allBotNamesInSalon', function(req, res,next) {
+    console.log(req.body.salon);
+    console.log("about to send "+manager.getAllBotNamesInSalon(req.body.salon));
+    res.send(JSON.stringify(manager.getAllBotNamesInSalon(req.body.salon)));
     
 });
 

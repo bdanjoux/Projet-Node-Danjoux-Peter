@@ -16,14 +16,20 @@
         <h2 >Bot administration</h2>
         <p>Choose which bot you want to administrate</p>
         <h3 >Change a Bot's Brains</h3>
+        <h4 >The bot to change</h4>
         <div id="listeBots"></div>
+        <h4 >The config file to apply</h4>
         <div id="listeConfigFiles"></div>
         <form action="/botInSalonLoadFile" method="post" id="bouton_brain">
             <input type="submit" id="chgt_brain" value="Changer Config" />
         </form>
         <h3 >Move a Bot Between Lobbies</h3>
+        <h4 >Origin Lobby</h4>
         <div id ="listeSalons"></div>
+        <h4 >Bot to move</h4>
         <div id="listeBotsInSalon"></div>
+        <h4 >Destination Lobby</h4>
+        <div id ="listeSalonsDestination"></div>
 
         <button></button>
         
@@ -79,49 +85,109 @@
 
             refreshConfigFiles();
 
-            var solSalonArray;
+            var solSalonArray=new Array();
+            var salonsDestination=null;
 
-
-            function refreshSalons(){
+            function refreshSalons(callback){
                 var salonRequest = new Request("allSalonNames");
                 fetch(salonRequest).then(function (response){
                     return response.json();}).then(function (blob){
-                    solSalonArray = blob;
-                    console.log(blob);
+                    solSalonArray = blob;                
+                    salonsDestination=solSalonArray;
+                    console.log('blob salon'+blob);
 
-                    var text = "<label for=\"salon\">Lobby: </label><form id=\"salon\" method = \"post\"><select name=\"salon\" size=\"1\"><option>No Lobby</option>";
+                    var text = "<form onchange=\"refreshAfterOriginSalonChange()\" id=\"listeSalonsForm\" method = \"post\"><select name=\"salon\" size=\"1\"><option value=\"0\">No Lobby</option>";
+                    var i=1;
                     solSalonArray.forEach(function(elt) {
-                        text += "<option>" + elt.salonName;
-                    });
-                    text+="</select></form>";
-
-                    document.getElementById("listeSalons").innerHTML = text;
-                });    
-            }
-            refreshSalons();
-
-            var botsInSelectedSalon;
-
-            function refreshBotsInSelectedSalon(salon){
-                var botRequest = new Request("allBotNamesInSalon",{salon : salon});
-                fetch(botRequest).then(function (responsz) {
-                return responsz.json();}).then(function (blob) {
-                    botsInSelectedSalon = blob;
-                    console.log(blob);
-
-                    var text = "<form id=\"listeBotsInSalonForm\"><select name=\"bots\" size=\"1\">";
-                    var i=0;
-                    botsInSelectedSalon.forEach(function(elt){
-                        text+="<option value=\""+i+"\">["+elt.salonName+"] "+elt.botName;
+                        text +="<option value=\""+i+"\">"+elt.salonName;
                         i=i+1;
                     });
                     text+="</select></form>";
 
-                    document.getElementById("listeBotsInSalon").innerHTML = text;
+                    document.getElementById("listeSalons").innerHTML = text;
+                    if(callback!=null){
+                        console.log('calling back');
+                        callback();
+                    }
                 });
             }
-            refreshBotsInSelectedSalon("No Lobby");
+            
 
+            var botsInSelectedSalon;
+            function refreshBotsInSelectedSalon(salon){
+                var Param = {
+                    method:"POST",
+                    headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded'}),
+                    body : "salon="+salon
+                };
+                var botRequest = new     Request("allBotNamesInSalon",Param);
+                fetch(botRequest).then(function (responsz) {
+                    console.log(responsz);
+                    return responsz.json();}
+                ).then(function (blob) {
+                        console.log('blob bots '+blob);
+                        if(blob==null){
+                            console.log('blob was null');
+                            botsInSelectedSalon=[{'botName' : 'no bots in this lobby'}];
+                        }else{
+                            botsInSelectedSalon = blob; 
+                        }
+
+                        var text = "<form id=\"listeBotsInSalonForm\"><select name=\"bots\" size=\"1\">";
+                        var i=0;
+                        botsInSelectedSalon.forEach(function(elt){
+                            text+="<option value=\""+i+"\">"+elt.botName;
+                            i=i+1;
+                        });
+                        text+="</select></form>";
+
+                        document.getElementById("listeBotsInSalon").innerHTML = text;
+                    });
+            }
+
+            refreshSalons(refreshAfterOriginSalonChange());
+
+            function refreshAfterOriginSalonChange(){
+                //console.log("selected in liste Salons "+$("#listeSalonsForm :selected").val());
+                //console.log(solSalonArray[$("#listeSalonsForm :selected").val()-1]);
+                //console.log(solSalonArray[$("#listeSalonsForm :selected").val()-1].salonPort);
+                console.log($("#listeSalonsForm :selected").val());
+                var newsalonsDestination = new Array();
+                if($("#listeSalonsForm :selected").val()-1>=0){
+                    refreshBotsInSelectedSalon(solSalonArray[$("#listeSalonsForm :selected").val()-1].salonPort);
+                    newsalonsDestination.push({'salonName':'No Lobby'});
+                }else{
+                    refreshBotsInSelectedSalon(0);
+                } 
+                var i =0;
+                console.log("refreshAfterOriginSalonChange");
+                for(i=0;i<solSalonArray.length;i++){
+                    console.log("i "+i, " the thing to add "+solSalonArray[i]);
+                    if(i!=$("#listeSalonsForm :selected").val()-1){
+                        console.log("about to push");
+                        newsalonsDestination.push(solSalonArray[i]);
+                    }
+                }
+                salonsDestination=null;
+                salonsDestination=newsalonsDestination;
+                refreshSalonsDestination();
+            }
+
+
+
+            function refreshSalonsDestination(){
+
+                var text = "<form id=\"listeSalonsDestinationForm\" method = \"post\"><select name=\"salon\" size=\"1\">";
+                var i=0;
+                salonsDestination.forEach(function(elt) {
+                    if(elt!=null){
+                        text +="<option value=\""+i+"\">"+elt.salonName;
+                        i=i+1;    
+                    }
+                });
+                text+="</select></form>";
+                document.getElementById("listeSalonsDestination").innerHTML = text;
+            }
 
             $('#bouton_brain').submit(function () {
                 console.log($("#listeBotsForm :selected").val());

@@ -235,16 +235,25 @@ module.exports = class Manager{
 
     getAllBotNamesInSalon(salonName){
         var ret = new Array();
+        console.log("getAllBotNamesInSalon "+salonName);
         if(salonName.includes("No Lobby")){
-            unassignedBots.forEach(function(key,bot,set){
+            console.log("includes No Lobby");
+            this.unassignedBots.forEach(function(key,bot,set){
                 var name = bot.getName();
-                ret.push({name});
+                ret.push({'botName' : name});
             });
         }else{
+            console.log("not includes No Lobby");
             var salon  = this.getSalon(salonName);
-            salon.getBotNames().forEach(function(botName){
-                ret.push({botName});
-            });    
+            if(salon!=null){
+                console.log("about to push botNames");
+                salon.getBotNames().forEach(function(botName){
+                    console.log(botName);
+                    ret.push({'botName' : botName});
+                });    
+            }else{
+                console.log("salon was null");
+            }
         }
         return ret;
     }
@@ -254,7 +263,7 @@ module.exports = class Manager{
         this.salons.forEach(function(key, salon, set){
             var salonName = salon.getName();
             var salonPort = salon.getPort();
-            ret.push({salonName, salonPort});
+            ret.push({'salonName':salonName, 'salonPort':salonPort});
         });
         return ret;
     }
