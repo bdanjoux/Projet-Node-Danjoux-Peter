@@ -102,6 +102,12 @@ app.get('/allBotNames', function(req, res) {
     res.send(JSON.stringify(manager.getAllBotNames()));
 });
 
+// admin page
+app.get('/allConfigFiles', function(req, res) {
+    res.send(JSON.stringify(manager.getAllAvailableConfigFiles()));
+});
+
+
 app.get('/allSalonNames', function(req, res){
     res.send(JSON.stringify(manager.getAllSalonNames()));
 });
@@ -157,6 +163,12 @@ app.post('/createBot', function(req, res, next){
     manager.addBotToSalon(req.body.botName,8081);
     console.log(manager.getAllBotNames());
     res.render('pages/about');
+});
+
+app.post('/botInSalonLoadFile', function(req, res, next){
+    console.log("");
+    manager.botInSalonLoadFile(req.body.name,parseInt(req.body.port),req.body.configFile);//TODO: récupérer les trucs du fichier botCreate
+    res.render('pages/botAdmin.ejs');
 });
 
 
