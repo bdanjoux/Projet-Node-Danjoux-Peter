@@ -174,7 +174,7 @@ app.post('/submit_signIn', function(req, res, next){
 });
 
 app.post('/createBot', function(req, res, next){
-    if(req.body.salonName = "No lobby")
+    if(req.body.salonName.includes("No lobby"))
     {
         manager.addBot(req.body.botName);
     }
