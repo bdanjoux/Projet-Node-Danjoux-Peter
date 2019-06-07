@@ -70,6 +70,7 @@ module.exports = class DanjouxPeterSalon{
     }
 
     connectDiscord(){
+        var that = this;
         var Discord = require('discord.js');
         this.discordClient = new Discord.Client();
         this.discordMessageQueue = new Array();
@@ -80,8 +81,12 @@ module.exports = class DanjouxPeterSalon{
         // Create an event listener for messages
         this.discordClient.on('message', message => {
           // If the message is "ping"
-          this.discordMessageQueue.push(message);
-          this.replyToBots(message.author,message.content);
+            if(!message.author.toString().includes(that.discordClient.user.id.toString())){
+                that.discordMessageQueue.push(message);
+                this.replyToBots(message.author,message.content);
+            }
+            that.discordMessageQueue.forEach(function (value) {  console.log(value.author.username);});
+
         });
 
         // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -97,7 +102,13 @@ module.exports = class DanjouxPeterSalon{
         if(this.discordClient!=null){
             if(this.discordMessageQueue.length>0){
                 var discordMessage = this.discordMessageQueue.shift();
-                discordMessage.channel.send(message);
+                console.log("discordMessage.channel.type "+discordMessage.channel.type);
+                if(discordMessage.channel.type.includes("dm")){
+                    discordMessage.author.send(message);
+                }else{
+                    discordMessage.channel.send(message);
+                }
+
             }
         }
     }
