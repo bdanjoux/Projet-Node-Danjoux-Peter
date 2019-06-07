@@ -5,6 +5,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var Manager = require("./Manager.js");
 var app = express();
+var fs = require('fs');
 
 app.use(session({
     key: 'user_sid',
@@ -24,7 +25,9 @@ app.use(express.urlencoded());
 //BDD
 var mongoose = require('mongoose');
 //var mongoDB = 'mongodb://localhost:27017/ChatBot';
-var mongoDB = 'mongodb+srv://ChatBotUser:Rvm5xqne6SpNJbDQ@cluster0-dsjyq.gcp.mongodb.net/ChatBot?retryWrites=true&w=majority';
+var mongoSecret = fs.readFileSync('./mongoPass.txt','utf8');
+//var mongoDB = 'mongodb+srv://ChatBotUser:Rvm5xqne6SpNJbDQ@cluster0-dsjyq.gcp.mongodb.net/ChatBot?retryWrites=true&w=majority';
+var mongoDB = 'mongodb+srv://ChatBotUser:'+mongoSecret+'@cluster0-dsjyq.gcp.mongodb.net/ChatBot?retryWrites=true&w=majority';
 
 mongoose.connect(mongoDB, {useNewUrlParser:true});
 

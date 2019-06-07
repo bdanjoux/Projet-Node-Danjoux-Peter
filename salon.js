@@ -1,5 +1,5 @@
 
-
+var fs = require('fs');
 
 module.exports = class DanjouxPeterSalon{
     
@@ -9,6 +9,7 @@ module.exports = class DanjouxPeterSalon{
         var server = require('http').createServer(app);
         var DanjouxPeterBot = require("./bot.js");
         var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+
         
         console.log("listening on port "+port);
 
@@ -90,7 +91,9 @@ module.exports = class DanjouxPeterSalon{
         });
 
         // Log our bot in using the token from https://discordapp.com/developers/applications/me
-        this.discordClient.login('NTg1NDY0Nzc5MTk2NTk2MjI0.XPZ37g.HYd-OPKtzYIT5fjU6Qjw8wKw7sI');
+        var discordSecret = fs.readFileSync('./discordPass.txt','utf8');
+        //this.discordClient.login('NTg1NDY0Nzc5MTk2NTk2MjI0.XPZ37g.HYd-OPKtzYIT5fjU6Qjw8wKw7sI');
+        this.discordClient.login(discordSecret);
 
     }
 
