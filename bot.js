@@ -32,6 +32,10 @@ module.exports = class DanjouxPeterBot{
         console.log("Bot "+this.name+" Had an error when loading files: " + error);   
     }
 
+    razRivscript(){
+        this.bot = new RiveScript();
+    }
+
     loading_error_dir(error, filename, lineno){
         console.log("Bot "+this.name+" Had an error when loading dir: " + error);   
     }       

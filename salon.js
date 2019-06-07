@@ -89,6 +89,10 @@ module.exports = class DanjouxPeterSalon{
 
     }
 
+    disconnectDiscord(){
+        this.discordClient=null;
+    }
+
     sendToDiscord(message){
         if(this.discordClient!=null){
             if(this.discordMessageQueue.length>0){

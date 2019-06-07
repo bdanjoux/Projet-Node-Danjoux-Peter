@@ -100,6 +100,11 @@ app.get('/salonCreate', function(req, res){
     res.render('pages/salonCreate.ejs');
 });
 
+//salon discord page
+app.get('/salonDiscord', function(req, res){
+    res.render('pages/salonDiscord.ejs');
+});
+
 // admin page
 app.get('/allBotNames', function(req, res) {
     res.send(JSON.stringify(manager.getAllBotNames()));
@@ -213,11 +218,37 @@ app.post('/botMove', function(req, res, next){
     }
 });
 
+app.post('/connectSalonDiscord', function(req, res, next){
+    console.log("connectSalonDiscord "+req.body.salon);
+    manager.getSalonByName(req.body.salon).connectDiscord();
+    res.render('pages/salonDiscord.ejs');
+});
+
+app.post('/disconnectSalonDiscord', function(req, res, next){
+    console.log("disconnectSalonDiscord "+req.body.salon);
+    manager.getSalonByName(req.body.salon).disconnectDiscord();
+    res.render('pages/salonDiscord.ejs');
+});
+
+app.post('/removeBotFromSalon', function(req, res, next){
+    var bot = req.body.bot;
+    var salon = req.body.salon; // fournir le nom du salon, c'est plus facile
+    console.log("removeBotFromSalon "+bot+" "+salon);
+    if(salon.includes("No Lobby")){
+        manager.removeBotFromManager(bot);
+    }else{
+        manager.removeBotFromSalon(bot,manager.getSalonByName(salon).getPort());
+    }
+    manager.getSalonByName(req.body.salon).connectDiscord();
+    res.render('pages/salonDiscord.ejs');
+});
+
 app.post('/chat', function(req, res, next){
     var port = req.body.port;
     var url = "http://localhost:"+port;
     res.redirect(url);
 });
+
 
 
 

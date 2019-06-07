@@ -70,7 +70,7 @@ module.exports = class Manager{
         this.salons.forEach(function(key,salon,set){
             console.log('salon '+salon.getName());
             if(salon!=null){
-                if(salon.getName()==name){
+                if(name.includes(salon.getName())){
                     ret = salon;
                 }
             }
@@ -113,6 +113,20 @@ module.exports = class Manager{
     addBotToManager(name,callback){
         var newBot = new DanjouxPeterBot(name);
         this.unassignedBots.add(bot);
+        if(callback!=null){
+            callback();
+        }
+    }
+
+    removeBotFromSalon(name,port1,callback){
+        var salon1 = this.getSalon(port1);
+        if(salon1!=null){
+            var bot = salon1.getBot(name);
+            if(bot!=null){
+                bot.disconnect();
+                salon1.removeBot(name);
+            }
+        }
         if(callback!=null){
             callback();
         }
@@ -189,6 +203,23 @@ module.exports = class Manager{
             var bot = salon.getBot(botName);
             if(bot!= null){
                 bot.loadFile(file);
+                done = true;
+            }
+        }
+        if(callback!=null){
+            callback(done);
+        }
+        return done;
+    }
+
+    botInSalonRazRivecript(botName,port,callback){
+        console.log("botInSalonLoadFile "+botName+" "+port);
+        var done = false;
+        var salon = this.getSalon(port);
+        if(salon != null){
+            var bot = salon.getBot(botName);
+            if(bot!= null){
+                bot.razRivscript();
                 done = true;
             }
         }
