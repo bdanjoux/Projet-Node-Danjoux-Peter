@@ -92,7 +92,6 @@ module.exports = class DanjouxPeterSalon{
 
         // Log our bot in using the token from https://discordapp.com/developers/applications/me
         var discordSecret = fs.readFileSync('./discordPass.txt','utf8');
-        //this.discordClient.login('NTg1NDY0Nzc5MTk2NTk2MjI0.XPZ37g.HYd-OPKtzYIT5fjU6Qjw8wKw7sI');
         this.discordClient.login(discordSecret);
 
     }
