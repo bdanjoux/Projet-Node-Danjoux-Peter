@@ -182,7 +182,7 @@ app.post('/createBot', function(req, res, next){
 });
 
 app.post('/createSalon', function(req, res, next){
-    manager.addSalon(req.body.salonName, req.body.salonPort);
+    manager.addSalon(req.body.salonName, parseInt(req.body.salonPort));
     console.log(manager.getAllSalonNames());
     res.render('pages/createSuccess.ejs');
 });

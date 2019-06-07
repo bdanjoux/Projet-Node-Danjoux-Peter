@@ -36,6 +36,7 @@
                 var text = "<form id=\"salon\" name=\"salonName\" method = \"post\"><select name=\"salon\" size=\"1\">";
                 solSalonArray.forEach(function(elt) {
                     text += "<option value=\""+i+"\">" + elt.salonName;
+                    i=i+1;
                 });
                 text+="</select></form>";
 
