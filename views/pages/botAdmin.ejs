@@ -31,6 +31,10 @@
         <h4 >Destination Lobby</h4>
         <div id ="listeSalonsDestination"></div>
 
+        <form action="/botMove" method="post" id="bouton_move">
+            <input type="submit" id="chgt_salon" value="Déplacer bot" />
+        </form>
+
         
         
         <script>
@@ -202,6 +206,25 @@
                         .attr('name', param.name)
                         .attr('value', param.value)
                         .appendTo('#bouton_brain');
+                });
+                return true;
+            });
+
+            $('#bouton_move').submit(function () {
+                console.log($("#listeBotsForm :selected").val());
+                console.log(solBotsArray2[$("#listeBotsForm :selected").val()]);
+
+                var salon1 = $("#listeSalonsForm :selected").text();
+                var bot = $("#listeBotsInSalonForm :selected").text();
+                var salon2 = $("#listeSalonsDestinationForm :selected").text();
+
+                console.log('salon1 '+salon1+' bot '+bot+' salon2 '+salon2);
+
+                $.each([{'name' : 'salon1', 'value' : salon1},{'name' : 'bot', 'value' : bot},{'name' : 'salon2', 'value' : salon2}], function(i,param){
+                    $('<input />').attr('type', 'hidden')
+                        .attr('name', param.name)
+                        .attr('value', param.value)
+                        .appendTo('#bouton_move');
                 });
                 return true;
             });

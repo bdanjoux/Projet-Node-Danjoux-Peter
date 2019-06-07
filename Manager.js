@@ -28,18 +28,6 @@ module.exports = class Manager{
                     this.addSalon(name,port);   
                 }
             });
-
-            // Si un administrateur demande la création d'un bot
-            // il précise un nom, le bot est créé, et ajouté au pool des bots non assignés.
-            socket.on('nouveau_bot', function (name) {
-                this.addBot(name);
-            });
-
-            // Si un administrateur demande la création d'un bot et son ajout à un pool
-            // il précise un nom et un port, le bot est créé, et ajouté au salon correspondant.
-            socket.on('nouveau_bot_to_salon', function (name,port) {
-                this.addBotToSalon(name,port);
-            });
         });
     }
 
@@ -61,6 +49,28 @@ module.exports = class Manager{
             console.log('salon '+salon.getName());
             if(salon!=null){
                 if(salon.getPort()==port){
+                    ret = salon;
+                }
+            }
+        });
+        if(ret==null){
+            console.log("didn't find salon");
+        }else{
+            console.log("found salon");
+        }
+        if(callback!=null){
+            callback(ret);
+        }
+        return ret;
+    }
+
+    getSalonByName(name,callback){
+        console.log('going through salon');
+        var ret=null;
+        this.salons.forEach(function(key,salon,set){
+            console.log('salon '+salon.getName());
+            if(salon!=null){
+                if(salon.getName()==name){
                     ret = salon;
                 }
             }

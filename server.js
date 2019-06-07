@@ -193,6 +193,26 @@ app.post('/botInSalonLoadFile', function(req, res, next){
     res.render('pages/botAdmin.ejs');
 });
 
+app.post('/botMove', function(req, res, next){
+    var salon1 = req.body.salon1;
+    var bot = req.body.bot;
+    var salon2 = req.body.salon2;
+    console.log("botMove salon1 "+salon1+" bot to Move "+bot+" salon2 "+salon2);
+
+    if(salon1.includes("No Lobby") && salon2.includes("No Lobby")){
+        res.status(403).send("Sorry! You can't move a bot from A to A.");
+    }else{
+        if(salon1.includes("No Lobby")){
+            manager.moveBotFromManagerToSalon(bot,manager.getSalonByName(salon2).getPort());
+        }else if(salon2.includes("No Lobby")){
+            manager.moveBotFromSalonToManager(bot,manager.getSalonByName(salon1).getPort());
+        }else{
+            manager.moveBotFromSalonToSalon(bot,manager.getSalonByName(salon1).getPort(),manager.getSalonByName(salon2).getPort());
+        }
+        res.render('pages/botAdmin.ejs');
+    }
+});
+
 app.post('/chat', function(req, res, next){
     var port = req.body.port;
     var url = "http://localhost:"+port;
